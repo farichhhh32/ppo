@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buka ajh</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            flex-direction: column;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            background-color: #ffcccb; /* Pink background */
+        }
+
+        .question, .options, .receipt {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+            z-index: 1;
+        }
+
+        .options {
+            display: none;
+            max-height: 400px; /* Set max height for scrollable area */
+            overflow-y: auto; /* Enable vertical scrolling */
+        }
+
+        .options img {
+            width: 100%;
+            height: 250px; /* Increased height for better image display */
+            object-fit: cover; /* Ensure images cover the box */
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .checkbox-option {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+        }
+
+        .checkbox-option img {
+            width: 120px; /* Increased width for better image display */
+            height: 100px; /* Increased height for better image display */
+            object-fit: cover;
+            margin-right: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #ff4b5c;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        button:disabled {
+            background-color: #ccc;
+        }
+
+        button.yes, button.no {
+            margin: 10px;
+        }
+
+        .heart {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background-color: rgba(255, 105, 180, 0.7); /* Light pink hearts */
+            border-radius: 50%;
+            opacity: 0.5;
+            z-index: 0;
+        }
+
+        @keyframes heart-move {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-100vh); }
+        }
+
+        @keyframes heart-fall {
+            0% { transform: translateY(-100vh); }
+            100% { transform: translateY(100vh); }
+        }
+
+        .background-animation {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(255, 182, 193, 0.5), rgba(255, 105, 180, 0.5));
+            background-size: 200% 200%;
+            animation: backgroundMove 10s linear infinite;
+            z-index: -1;
+        }
+
+        @keyframes backgroundMove {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 100% 100%; }
+        }
+
+        .receipt {
+            display: none;
+        }
+
+        .receipt h2 {
+            color: #ff4b5c;
+        }
+
+        .receipt img {
+            width: 200px; /* Adjust width as needed */
+            height: auto;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="background-animation"></div>
+
+    <div class="question" id="question">
+        <h2>Do you love me?</h2>
+        <button class="yes" onclick="answerYes()">Yes</button>
+        <button class="no" onclick="answerNo()">No</button>
+    </div>
+
+    <div class="question" id="askAgain" style="display: none;">
+        <h2>Are you sure you don't love me? 😢</h2>
+        <button class="yes" onclick="answerYes()">Yes, I love you!</button>
+        <button class="no" onclick="noChoice()">No, ask again!</button>
+    </div>
+
+    <div class="options" id="dateOptions">
+        <h2>Day 1</h2>
+        <div class="option">
+            <img src="coffee2.JPG" alt="Coffee Date">
+            <p>Option 1: Coffee date?</p>
+            <button onclick="chooseOption('Coffee Date')">Choose</button>
+        </div>
+        <div class="option">
+            <img src="IMG_4959.JPG" alt="Go to Paris">
+            <p>Option 2: Go to Paris?</p>
+            <button onclick="chooseOption('Go to Paris')">Choose</button>
+        </div>
+        <div class="option">
+            <img src="beacchhh.JPG" alt="Beach Walk">
+            <p>Option 3: Beach Walk</p>
+            <button onclick="chooseOption('Beach Walk')">Choose</button>
+        </div>
+        <div class="option">
+            <img src="IMG_4960.JPG" alt="Find some ice cream">
+            <p>Option 4: Find some ice cream?</p>
+            <button onclick="chooseOption('Find some ice cream')">Choose</button>
+        </div>
+    </div>
+
+    <div class="options" id="day2Options" style="display: none;">
+        <h2>Day 2</h2>
+        <div class="checkbox-option">
+            <img src="beacchhh.JPG" alt="Beach Date">
+            <input type="checkbox" id="beachDate" value="Beach Date">
+            <label for="beachDate">Beach Date</label>
+        </div>
+        <div class="checkbox-option">
+            <img src="beach.JPG" alt="Movie Date">
+            <input type="checkbox" id="movieDate" value="Movie Date">
+            <label for="movieDate">Movie Date</label>
+        </div>
+        <div class="checkbox-option">
+            <img src="snack.JPG" alt="Some Snacks">
+            <input type="checkbox" id="snackTime" value="Snack Time">
+            <label for="snackTime">Some Snacks</label>
+        </div>
+        <button id="nextDayButton" onclick="submitDay2Options()">Submit Choices</button>
+    </div>
+
+    <div class="options" id="day3Options" style="display: none;">
+        <h2>Day 3</h2>
+        <div class="option">
+            <img src="kopi.JPG" alt="Alahan Panjang">
+            <p>U got no option bb : Go to Alahan Panjang yeayyy!</p>
+            <button onclick="chooseDay3Option()">Choose</button>
+        </div>
+    </div>
+
+    <div class="receipt" id="receipt">
+        <h2>Congratulations!</h2>
+        <p>Here is a summary of your choices:</p>
+        <div id="receiptContent"></div>
+        <p>Thank you for participating! 💖 Share the result with your bf! hehe</p>
+        <img src="IMG_4961.JPG" alt="Thank You">
+    </div>
+
+    <script>
+        let choices = {
+            day1: null,
+            day2: [],
+            day3: null
+        };
+
+        function answerYes() {
+            document.getElementById('question').style.display = 'none';
+            document.getElementById('askAgain').style.display = 'none';
+            document.getElementById('dateOptions').style.display = 'block';
+        }
+
+        function answerNo() {
+            document.getElementById('question').style.display = 'none';
+            document.getElementById('askAgain').style.display = 'block';
+        }
+
+        function noChoice() {
+            document.getElementById('askAgain').innerHTML = `
+                <h2>Ahahaha, you got no choice now! 😜</h2>
+                <button class="yes" onclick="answerYes()">Okay, I love you!</button>
+            `;
+        }
+
+        function chooseOption(option) {
+            if (option === 'Go to Paris') {
+                alert("Sorry babe, I'm broke right now 😅. Please choose another option.");
+                document.getElementById('dateOptions').style.display = 'block'; // Show options again
+                return; // Exit the function to prevent further execution
+            }
+
+            choices.day1 = option;
+            alert("Let's go bb ucuk! 🥰");
+            document.getElementById('dateOptions').style.display = 'none';
+            document.getElementById('day2Options').style.display = 'block';
+            createHearts();
+        }
+
+        function submitDay2Options() {
+            const options = [];
+            if (document.getElementById('beachDate').checked) options.push('Beach Date');
+            if (document.getElementById('movieDate').checked) options.push('Movie Date');
+            if (document.getElementById('snackTime').checked) options.push('Some Snacks');
+
+            if (options.length > 0) {
+                choices.day2 = options;
+                alert("You chose: " + options.join(', ') + ". Let's go bb ucuk! 🥰");
+                document.getElementById('day2Options').style.display = 'none';
+                document.getElementById('day3Options').style.display = 'block';
+                createHearts();
+            } else {
+                alert("Please choose at least one option, bb ucuk!");
+            }
+        }
+
+        function chooseDay3Option() {
+            choices.day3 = 'Go to Alahan Panjang';
+            alert("Yeayyy! We're going to Alahan Panjang! 😍");
+            displayReceipt();
+        }
+
+        function displayReceipt() {
+            const receiptContent = document.getElementById('receiptContent');
+            receiptContent.innerHTML = `
+                <h3>Day 1: ${choices.day1 || 'Not chosen'}</h3>
+                <h3>Day 2: ${choices.day2.length > 0 ? choices.day2.join(', ') : 'Not chosen'}</h3>
+                <h3>Day 3: ${choices.day3 || 'Not chosen'}</h3>
+            `;
+            document.getElementById('day3Options').style.display = 'none';
+            document.getElementById('receipt').style.display = 'block';
+        }
+
+        function createHearts() {
+            const heartCount = 20;
+            for (let i = 0; i < heartCount; i++) {
+                const heart = document.createElement("div");
+                heart.className = "heart";
+                heart.style.left = `${Math.random() * 100}%`;
+                heart.style.top = `${Math.random() * 100}%`;
+                heart.style.animation = `heart-move 1s linear infinite, heart-fall ${Math.random() * 3 + 2}s linear infinite`;
+                document.body.appendChild(heart);
+                heart.addEventListener('animationend', () => heart.remove());
+            }
+        }
+    </script>
+</body>
+</html>
